@@ -1,10 +1,11 @@
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
+import bgImage from './../assets/images/home-hero.png'
 
 const Home = () => {
    return (
       <HomeWrapper>
-         <div style={{backgroundImage: "url('./../assets/images/home-hero.png')"}}className='hero-background'></div>
+         <div style={{backgroundImage: `url(${bgImage})`}}className='hero-background'></div>
          <div className='hero-content'>
             <h1>You got the travel plans, we got the travel vans.</h1>
             <p>
