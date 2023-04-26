@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 const Home = () => {
    return (
       <HomeWrapper>
-         <div className='hero-background'></div>
+         <div style={{backgroundImage: "url('./../assets/images/home-hero.png')"}}className='hero-background'></div>
          <div className='hero-content'>
             <h1>You got the travel plans, we got the travel vans.</h1>
             <p>
@@ -27,7 +27,7 @@ const HomeWrapper = styled.main`
    isolation: isolate;
    overflow: hidden;
    .hero-background {
-      background-image: url('./../assets/images/home-hero.png');
+      
       background-size: cover;
       background-position: center;
       background-color: rgba(51, 51, 51);
