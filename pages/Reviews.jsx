@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { AiFillStar } from 'react-icons/ai'
-import { reviewPNG } from '../assets/images/reviews-graph.png'
+import reviewPNG  from '../assets/images/reviews-graph.png'
 
 const Reviews = () => {
    return (
