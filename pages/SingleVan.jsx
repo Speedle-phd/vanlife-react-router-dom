@@ -5,10 +5,12 @@ import styled from 'styled-components'
 import { BsArrowLeftShort } from 'react-icons/bs'
 import { wait } from '../utils/utils'
 import Loading from '../components/Loading'
+import Error from '../components/Error'
 
 const SingleVan = () => {
    const [van, setVan] = useState(null)
    const [loading, setLoading] = useState(true)
+   const [error, setError] = useState(false)
    const { id } = useParams()
    const url = `/api/vans/${id}`
 
@@ -18,19 +20,24 @@ const SingleVan = () => {
          const {
             data: { vans },
          } = await axios(url)
-         console.log(vans)
          setVan(vans)
          await wait(500)
          setLoading(false)
       } catch (error) {
          console.log(error)
+         setError(true)
+         setLoading(false)
       }
    }, [url])
+   
    useEffect(() => {
       fetchData()
    }, [fetchData])
+
    if (loading) {
       return <Loading />
+   } else if(error) {
+      return <Error id={id}/>
    }
    return (
       <VanWrapper>
@@ -76,11 +83,19 @@ export default SingleVan
 const VanWrapper = styled.article`
    background-color: rgba(222, 222, 222, 0.5);
    padding: 2rem 1.5rem;
-   .column {
+   .column:nth-child(1) {
       @media screen and (min-width: 1000px) {
          display: flex;
          flex-direction: column;
-         width: 45%;
+         flex: 1 0 50%;
+      }
+   }
+   .column:nth-child(2) {
+      @media screen and (min-width: 1000px) {
+         display: flex;
+         flex-direction: column;
+         flex: 1 1 40%;
+         padding: 10rem 1rem;
       }
    }
    .vans-link {

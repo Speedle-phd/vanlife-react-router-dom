@@ -28,7 +28,6 @@ const HomeWrapper = styled.main`
    isolation: isolate;
    overflow: hidden;
    .hero-background {
-      
       background-size: cover;
       background-position: center;
       background-color: rgba(51, 51, 51);
@@ -44,9 +43,13 @@ const HomeWrapper = styled.main`
       @media screen and (max-width: 640px) {
          inset: 3rem 3rem;
       }
+      @media screen and (min-width: 1200px) {
+         inset: 10rem 3rem 3rem 3rem;
+         text-align: center;
+      }
       h1 {
-         font-size: 3rem;
-         @media screen and (max-width: 640px) {
+         font-size: 1.8rem;
+         @media screen and (min-width: 640px) {
             font-size: 2.5rem;
          }
       }
@@ -56,8 +59,9 @@ const HomeWrapper = styled.main`
       }
       button {
          color: #fff;
-         width: 100%;
+         width: clamp(20rem, 100%, 70rem);
          margin-block: 3rem;
+
          padding-block: 1.5rem;
          background-color: var(--brand);
          border-radius: 3px;
@@ -66,7 +70,7 @@ const HomeWrapper = styled.main`
          opacity: 0.8;
          transition: 0.5s ease;
          cursor: pointer;
-         :hover{
+         :hover {
             opacity: 1;
          }
       }
