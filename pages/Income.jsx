@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import { AiFillStar } from 'react-icons/ai'
+import incomePNG from '../assets/images/income-graph.png'
 
 const Income = () => {
    return (
@@ -13,7 +14,7 @@ const Income = () => {
             </p>
             <div className='income'>€2,260</div>
          </div>
-         <img src="../assets/images/income-graph.png" alt="" />
+         <img src={incomePNG} alt="" />
          <div className='user-transactions'>
             <header>
                <h3>Your transactions(3)</h3>

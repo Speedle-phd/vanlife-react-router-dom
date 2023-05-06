@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { AiFillStar } from 'react-icons/ai'
+import { reviewPNG } from '../assets/images/reviews-graph.png'
 
 const Reviews = () => {
    return (
@@ -11,7 +12,7 @@ const Reviews = () => {
                last <span>30 days</span>
             </p>
          </header>
-         <img src='../assets/images/reviews-graph.png' alt='' />
+         <img src={reviewPNG} alt='' />
          <div className='review-container'>
             <h4>Reviews(2)</h4>
             <div className='review-boxes'>
