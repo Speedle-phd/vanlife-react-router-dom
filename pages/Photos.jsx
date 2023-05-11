@@ -7,14 +7,12 @@ const Photos = () => {
    const data = useOutletContext()
    const [modal, setModal] = useState(false)
    const [currentImg, setCurrentImg] = useState(false)
-   const imgRef = useRef()
+
 
    const handleModal = (e) => {
       const { target: t } = e
       setCurrentImg(t.src)
       setModal(true)
-      
-      // imgRef.current.src = t.src
    }
 
    return (
@@ -39,9 +37,6 @@ const Photos = () => {
 export default Photos
 
 const PhotosWrapper = styled.div`
-   /* aside{
-      width: 60vw;
-   } */
    aside{
       position: fixed;
       top: 50%;
@@ -53,6 +48,7 @@ const PhotosWrapper = styled.div`
       display: flex;
       justify-content: center;
       align-items: center;
+      backdrop-filter: blur(3px);
       img{
          width: 100%;
          height: 100%;

@@ -1,87 +1,69 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { Suspense, useState } from 'react'
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
+import { Await, Link, useLoaderData } from 'react-router-dom'
 import { AiFillStar } from 'react-icons/ai'
-import { wait } from '../utils/utils'
-import axios from 'axios'
 import Loading from '../components/Loading'
-import Error from '../components/Error'
+
 
 const Dashboard = () => {
-   const [vans, setVans] = useState()
-   const [error, setError] = useState(false)
-   const [loading, setLoading] = useState(true)
-   const [userId, setUserId] = useState('123')
+   const loaderPromise = useLoaderData()
 
-   const fetchData = useCallback(async () => {
-      try {
-         const {
-            data: { vans },
-         } = await axios('/api/host/vans')
-         console.log(vans)
-         setVans(vans)
-         await wait(500)
-         setLoading(false)
-      } catch (error) {
-         console.log(error)
-         setError(true)
-      }
-   }, [])
 
-   useEffect(() => {
-      fetchData()
-   }, [fetchData])
-   return (
-      <DashboardWrapper>
-         <div className='overview'>
-            <h2>Welcome!</h2>
-            <div>
+   function renderVans (vans) {
+      console.log(vans)
+      const userVans = (vans ?? []).map((el) => {
+         const { name, imageUrl, id, price } = el
+         return (
+            <div key={id} className='single-van'>
+               <div className='content'>
+                  <img src={imageUrl} alt='' />
+                  <div className='info'>
+                     <h4>{name}</h4>
+                     <p>{price}€/day</p>
+                  </div>
+               </div>
+               <Link to={`/host/vans/${id}`}>Edit</Link>
+            </div>
+         )
+      })
+      return (
+         <DashboardWrapper>
+            <div className='overview'>
+               <h2>Welcome!</h2>
+               <div>
+                  <p>
+                     Income last <span>30 days</span>
+                  </p>
+                  <Link to='/host/income'>Details</Link>
+               </div>
+               <div className='income'>€2,260</div>
+            </div>
+            <div className='review-score'>
                <p>
-                  Income last <span>30 days</span>
+                  <span>Review score:</span>
+                  <AiFillStar /> <span>5.0</span>/5
                </p>
-               <Link to='/host/income'>Details</Link>
+               <Link to='/host/reviews'>Details</Link>
             </div>
-            <div className='income'>€2,260</div>
-         </div>
-         <div className='review-score'>
-            <p>
-               <span>Review score:</span>
-               <AiFillStar /> <span>5.0</span>/5
-            </p>
-            <Link to='/host/reviews'>Details</Link>
-         </div>
-         <div className='user-vans'>
-            <header>
-               <h3>Your listed vans</h3>
-               <Link to='/host/vans'>View all</Link>
-            </header>
-            <div className='van-container'>
-               {loading ? (
-                  <Loading />
-               ) : error ? (
-                  <Error />
-               ) : (
-                  (vans ?? [])
-                     .filter((el) => el.hostId === userId)
-                     .map((el) => {
-                        const { name, imageUrl, id, price } = el
-                        return (
-                           <div key={id} className='single-van'>
-                              <div className='content'>
-                                 <img src={imageUrl} alt='' />
-                                 <div className='info'>
-                                    <h4>{name}</h4>
-                                    <p>{price}€/day</p>
-                                 </div>
-                              </div>
-                              <Link to={`/host/vans/${id}`}>Edit</Link>
-                           </div>
-                        )
-                     })
-               )}
+            <div className='user-vans'>
+               <header>
+                  <h3>Your listed vans</h3>
+                  <Link to='/host/vans'>View all</Link>
+               </header>
+               <div className='van-container'>
+                  {userVans}
+               </div>
             </div>
-         </div>
-      </DashboardWrapper>
+         </DashboardWrapper>
+      )
+   }
+
+   return (
+      <Suspense fallback={<Loading/>}>
+         <Await resolve={loaderPromise.data}>
+            {renderVans}
+         </Await>
+      </Suspense>
    )
 }
 

@@ -1,32 +1,34 @@
 import styled from 'styled-components'
 import bgImg from '../assets/images/about-hero.png'
 import {Link} from 'react-router-dom'
+import Loading from '../components/Loading'
+import { Suspense } from 'react'
 
 
 const About = () => {
    return (
-      <AboutWrapper>
-         <img src={bgImg} />
-         <AboutContainer className='text-container'>
-            <h2>Don't squeeze in a sedan when you could relax in a van.</h2>
-            <p>
-               Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis
-               aut et natus labore cumque, expedita sunt officia ab saepe? Aut,
-               quisquam iusto nesciunt ad dolores enim necessitatibus
-               exercitationem facere rem, corporis voluptatibus deserunt officia
-               molestiae incidunt.
-            </p>
-            <p>
-               Lorem ipsum dolor sit amet consectetur, adipisicing elit. Amet
-               sed quod sit ipsa ea impedit quis ratione vel iure.
-            </p>
-         </AboutContainer>
-         <AboutContainer className='link-container'>
-            <h3>Your destination is waiting.<br/>
-            Your van is ready.</h3>
-            <Link className="link" to="/vans"><button>Explore our vans</button></Link>
-         </AboutContainer>
-      </AboutWrapper>
+         <AboutWrapper>
+            <img src={bgImg} />
+            <AboutContainer className='text-container'>
+               <h2>Don't squeeze in a sedan when you could relax in a van.</h2>
+               <p>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis
+                  aut et natus labore cumque, expedita sunt officia ab saepe? Aut,
+                  quisquam iusto nesciunt ad dolores enim necessitatibus
+                  exercitationem facere rem, corporis voluptatibus deserunt officia
+                  molestiae incidunt.
+               </p>
+               <p>
+                  Lorem ipsum dolor sit amet consectetur, adipisicing elit. Amet
+                  sed quod sit ipsa ea impedit quis ratione vel iure.
+               </p>
+            </AboutContainer>
+            <AboutContainer className='link-container'>
+               <h3>Your destination is waiting.<br/>
+               Your van is ready.</h3>
+               <Link className="link" to="/vans"><button>Explore our vans</button></Link>
+            </AboutContainer>
+         </AboutWrapper>
    )
 }
 

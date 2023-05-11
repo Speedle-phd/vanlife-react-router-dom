@@ -1,69 +1,51 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { Suspense, useState } from 'react'
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
-
-import { wait } from '../utils/utils'
-import axios from 'axios'
+import { Link, useLoaderData, Await } from 'react-router-dom'
 import Loading from '../components/Loading'
-import Error from '../components/Error'
 
 const UserVans = () => {
-   const [vans, setVans] = useState()
-   const [error, setError] = useState(false)
-   const [loading, setLoading] = useState(true)
-   const [userId, setUserId] = useState('123')
+   const loaderPromise = useLoaderData()
 
-   const fetchData = useCallback(async () => {
-      try {
-         const {
-            data: { vans },
-         } = await axios('/api/host/vans')
-         console.log(vans)
-         setVans(vans)
-         await wait(500)
-         setLoading(false)
-      } catch (error) {
-         console.log(error)
-         setError(true)
-      }
-   }, [])
 
-   useEffect(() => {
-      fetchData()
-   }, [fetchData])
-   return (
-      <UserVansWrapper>
-   
-         <div className='user-vans'>
-            <header>
-               <h3>Your listed vans</h3>
-            </header>
-            <div className='van-container'>
-               {loading ? (
-                  <Loading />
-               ) : error ? (
-                  <Error />
-               ) : (
-                  (vans ?? [])
-                     .filter((el) => el.hostId === userId)
-                     .map((el) => {
-                        const { name, imageUrl, id, price } = el
-                        return (
-                           <Link to={`/host/vans/${id}`} key={id} className='single-van'>
-                              <div className='content'>
-                                 <img src={imageUrl} alt='' />
-                                 <div className='info'>
-                                    <h4>{name}</h4>
-                                    <p>{price}€/day</p>
-                                 </div>
-                              </div>
-                           </Link>
-                        )
-                     })
-               )}
+   function renderUserVans (vans) {
+
+      const renderVans = (vans ?? []).map((el) => {
+         const { name, imageUrl, id, price } = el
+         console.log(id)
+         return (
+            <Link to={`/host/vans/${id}`} key={id} className='single-van'>
+               <div className='content'>
+                  <img src={imageUrl} alt='' />
+                  <div className='info'>
+                     <h4>{name}</h4>
+                     <p>{price}€/day</p>
+                  </div>
+               </div>
+            </Link>
+         )
+      })
+
+      return (
+         <UserVansWrapper>
+            <div className='user-vans'>
+               <header>
+                  <h3>Your listed vans</h3>
+               </header>
+               <div className='van-container'>
+                  {renderVans}
+               </div>
             </div>
-         </div>
-      </UserVansWrapper>
+         </UserVansWrapper>
+      )
+   }
+
+
+   return (
+      <Suspense fallback={<Loading />}>
+         <Await resolve={loaderPromise.data}>
+            {renderUserVans}
+         </Await>
+      </Suspense>
    )
 }
 

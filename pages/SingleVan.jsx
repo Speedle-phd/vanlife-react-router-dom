@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, Suspense } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useLoaderData, useLocation, useParams, Await } from 'react-router-dom'
 import axios from 'axios'
 import styled from 'styled-components'
 import { BsArrowLeftShort } from 'react-icons/bs'
@@ -8,74 +8,65 @@ import Loading from '../components/Loading'
 import Error from '../components/Error'
 
 const SingleVan = () => {
-   const [van, setVan] = useState(null)
-   const [loading, setLoading] = useState(true)
-   const [error, setError] = useState(false)
-   const { id } = useParams()
-   const url = `/api/vans/${id}`
+   const location = useLocation()
+   const sp = new URLSearchParams(location.state).toString()
+   const filterHistory = location.state?.filter || null
 
-   const fetchData = useCallback(async () => {
-      try {
-         setLoading(true)
-         const {
-            data: { vans },
-         } = await axios(url)
-         setVan(vans)
-         await wait(500)
-         setLoading(false)
-      } catch (error) {
-         console.log(error)
-         setError(true)
-         setLoading(false)
-      }
-   }, [url])
-   
-   useEffect(() => {
-      fetchData()
-   }, [fetchData])
+   const loaderPromise = useLoaderData()
+   // const [van, setVan] = useState(loaderData)
 
-   if (loading) {
-      return <Loading />
-   } else if(error) {
-      return <Error id={id}/>
-   }
-   return (
-      <VanWrapper>
-         <div className='vans-link'>
-            <BsArrowLeftShort />
-            <Link to='/vans'>Back to all vans</Link>
-         </div>
-         <div className='van-container'>
-            <div className="column">
-               <img src={van?.imageUrl} alt='' />
-               <button
-                  style={{
-                     backgroundColor:
-                        van?.type === 'simple'
-                           ? 'steelblue'
-                           : van?.type === 'luxury'
-                           ? 'goldenrod'
-                           : 'teal',
-                  }}
-                  className='btn-type'
-               >
-                  {van?.type}
-               </button>
-            </div>
-
-            <div className="column">
-               <h2>{van?.name}</h2>
-               <div className='price'>
-                  {van?.price}€<span>/day</span>
-               </div>
-               <p>{van?.description}</p>
-               <Link className='rent-van' to='#'>
-                  <button>Rent this van</button>
+   function renderSingleVan (van)  {
+      console.log(van)
+      return (
+         <VanWrapper>
+            <div className='vans-link'>
+               <BsArrowLeftShort />
+               <Link to={sp ? `/vans?${sp}` : `/vans`}>
+                  {filterHistory ? `Back to ${filterHistory} vans` : "Back to all vans"}
                </Link>
             </div>
-         </div>
-      </VanWrapper>
+            <div className='van-container'>
+               <div className="column">
+                  <img src={van?.imageUrl} alt='' />
+                  <button
+                     style={{
+                        backgroundColor:
+                           van?.type === 'simple'
+                              ? 'steelblue'
+                              : van?.type === 'luxury'
+                              ? 'goldenrod'
+                              : 'teal',
+                     }}
+                     className='btn-type'
+                  >
+                     {van?.type}
+                  </button>
+               </div>
+   
+               <div className="column">
+                  <h2>{van?.name}</h2>
+                  <div className='price'>
+                     {van?.price}€<span>/day</span>
+                  </div>
+                  <p>{van?.description}</p>
+                  <Link className='rent-van' to='#'>
+                     <button>Rent this van</button>
+                  </Link>
+               </div>
+            </div>
+         </VanWrapper>
+      )
+
+   }
+   return (
+      <Suspense fallback={<Loading/>}>
+         <Await resolve={loaderPromise.dataPromise}>
+            {renderSingleVan}
+         </Await>
+      </Suspense>
    )
+
+
 }
 
 export default SingleVan

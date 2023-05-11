@@ -1,58 +1,64 @@
-import React, { useState, useCallback, useEffect } from 'react'
-import { NavLink, Outlet, useParams } from 'react-router-dom'
-import axios from 'axios'
-import { wait } from '../utils/utils'
+import React, { Suspense, useState } from 'react'
+import { Await, NavLink, Outlet, useLoaderData } from 'react-router-dom'
 import styled from 'styled-components'
 import Loading from './Loading'
-import Error from './Error'
+
 
 const SingleVanNav = () => {
-   const [van, setVan] = useState(null)
-   const [loading, setLoading] = useState(true)
-   const [error, setError] = useState(false)
-   const { id } = useParams()
-   const url = `/api/vans/${id}`
-   const fetchData = useCallback(async () => {
-      try {
-         setError(false)
-         setLoading(true)
-         const {
-            data: { vans },
-         } = await axios(url)
-         setVan(vans)
-         await wait(500)
-         setLoading(false)
-      } catch (error) {
-         console.log(error)
-         setError(true)
-         setLoading(false)
-      }
-   }, [url])
+   const loaderPromise = useLoaderData()
+   
 
-   useEffect(() => {
-      fetchData()
-      console.log(van)
-   }, [fetchData])
-
-   if (loading) return <Loading/>
-   if (error) return <Error/>
+   function renderSingleVanNav(van){
    return (
       <SingleVanNavWrapper>
-         <div className="basic-infos">
-            <img src={van?.imageUrl} alt="" />
-            <div className="content">
+         <div className='basic-infos'>
+            <img src={van?.imageUrl} alt='' />
+            <div className='content'>
                <h4>{van?.name}</h4>
-               <p>{van?.price}€<span>/day</span></p>
+               <p>
+                  {van?.price}€<span>/day</span>
+               </p>
             </div>
          </div>
-         <div className="single-van-navigation">
-            <NavLink className={({isActive}) => isActive ? "active-single-van" : null}to="" end>Details</NavLink>
-            <NavLink className={({isActive}) => isActive ? "active-single-van" : null}to="pricing">Pricing</NavLink>
-            <NavLink className={({isActive}) => isActive ? "active-single-van" : null}to="photos">Photos</NavLink>
+         <div className='single-van-navigation'>
+            <NavLink
+               className={({ isActive }) =>
+                  isActive ? 'active-single-van' : null
+               }
+               to=''
+               end
+            >
+               Details
+            </NavLink>
+            <NavLink
+               className={({ isActive }) =>
+                  isActive ? 'active-single-van' : null
+               }
+               to='pricing'
+            >
+               Pricing
+            </NavLink>
+            <NavLink
+               className={({ isActive }) =>
+                  isActive ? 'active-single-van' : null
+               }
+               to='photos'
+            >
+               Photos
+            </NavLink>
          </div>
-         <Outlet context={van}/>
+         <Outlet context={van} />
       </SingleVanNavWrapper>
    )
+   }
+   return (
+      <Suspense fallback={<Loading/>}>
+         <Await resolve={loaderPromise.data}>
+            {renderSingleVanNav}
+         </Await>
+      </Suspense>
+   )
+
 }
 
 export default SingleVanNav
@@ -92,3 +98,4 @@ const SingleVanNavWrapper = styled.div`
       font-weight: 600;
    }
 `
+

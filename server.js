@@ -82,10 +82,10 @@ createServer({
    },
 
    routes() {
+      this.passthrough("https://firestore.googleapis.com/**")
       this.namespace = 'api'
 
       this.get('/vans', (schema, request) => {
-         console.log(schema)
          return schema.vans.all()
       })
 
@@ -95,12 +95,39 @@ createServer({
       })
       this.get('/host/vans', (schema, request) => {
          // Hard-code the hostId for now
-         return schema.vans.where({ hostId: '123' })
+         return schema.vans.where({ hostId: "123" })
       })
       this.get('/host/vans/:id', (schema, request) => {
          // Hard-code the hostId for now
          const id = request.params.id
          return schema.vans.findBy({ id, hostId: '123' })
       })
+      this.post('/login', (schema, request) => {
+         console.log(request.requestBody)
+         const {email, password} = JSON.parse(request.requestBody)
+         
+         console.log(email, password)
+         const user = schema.users.findBy({email, password}).attrs
+
+         if(!user) throw new Error({message: "Either email doesn't exist or password is wrong", status: 401})
+
+         user.token ??= crypto.randomUUID()
+         delete user.password
+         console.log(user)
+         return user
+      }, {timing: 2000})
+
+      this.post('/signup', (schema, request)=> {
+         const data = JSON.parse(request.requestBody)
+         const newUser = schema.users.findOrCreateBy(data).attrs
+         console.log(newUser)
+         newUser.token ??= crypto.randomUUID() 
+         delete newUser.password
+         
+         console.log(newUser)
+         return newUser
+      })
+
+
    },
 })

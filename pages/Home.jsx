@@ -1,8 +1,11 @@
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import bgImage from './../assets/images/home-hero.png'
+import { useGlobalAuth } from '../context/AuthContextProvider'
 
 const Home = () => {
+   const {token} = useGlobalAuth()
+   console.log(token)
    return (
       <HomeWrapper>
          <div style={{backgroundImage: `url(${bgImage})`}}className='hero-background'></div>

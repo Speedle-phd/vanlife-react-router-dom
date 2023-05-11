@@ -1,18 +1,20 @@
 import React from 'react'
-import { useParams, useRouteError } from 'react-router-dom'
+import { Link, useParams, useRouteError } from 'react-router-dom'
 import styled from 'styled-components'
 
-const Error = () => {
+const LoginError = () => {
    const error = useRouteError()
+   console.log(error)
    return (
       <ErrorWrapper>
          <h2>Error {error.status}</h2>
          <p>{error.message}</p>
+         <Link to="/login">Back to login</Link>
       </ErrorWrapper>
    )
 }
 
-export default Error
+export default LoginError
 
 const ErrorWrapper = styled.div`
    display: flex;

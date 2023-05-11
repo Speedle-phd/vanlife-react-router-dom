@@ -7,6 +7,7 @@ const RootLayout = ({ children }) => {
       <>
          <Navbar />
             <Outlet/>
+            {children}
          <Footer />
       </>
    )
